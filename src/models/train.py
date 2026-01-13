@@ -3,12 +3,8 @@ import mlflow
 import mlflow.sklearn
 from pathlib import Path
 
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import (
-    classification_report,
-    roc_auc_score,
-    precision_recall_curve
-)
+from sklearn.metrics import roc_auc_score, classification_report
+from xgboost import XGBClassifier
 
 PROCESSED_PATH = Path("data/processed")
 
@@ -21,40 +17,71 @@ def load_data():
     return X_train, X_test, y_train, y_test
 
 
-def train_baseline():
+def train_xgboost(params: dict, run_name: str):
     X_train, X_test, y_train, y_test = load_data()
 
-    mlflow.set_experiment("fraud-detection-baseline")
-
-    with mlflow.start_run(run_name="logistic_regression_baseline"):
-        model = LogisticRegression(
-            max_iter=1000,
-            class_weight="balanced",
+    with mlflow.start_run(run_name=run_name):
+        model = XGBClassifier(
+            **params,
+            objective="binary:logistic",
+            eval_metric="auc",
+            use_label_encoder=False,
             random_state=42
         )
 
         model.fit(X_train, y_train)
 
-        y_pred = model.predict(X_test)
         y_proba = model.predict_proba(X_test)[:, 1]
+        y_pred = (y_proba >= 0.5).astype(int)
 
         roc_auc = roc_auc_score(y_test, y_proba)
 
+        print(f"\nRun: {run_name}")
         print("ROC-AUC:", roc_auc)
         print("\nClassification Report:\n")
         print(classification_report(y_test, y_pred))
 
-        # Log params & metrics
-        mlflow.log_param("model", "LogisticRegression")
-        mlflow.log_param("class_weight", "balanced")
+        mlflow.log_params(params)
         mlflow.log_metric("roc_auc", roc_auc)
+        mlflow.sklearn.log_model(model, "model")
 
-        # Save model
-        model_path = "model"
-        mlflow.sklearn.log_model(model, model_path)
 
-        print("Model training logged to MLflow")
+def main():
+    mlflow.set_experiment("fraud-detection-xgboost")
+
+    # Fraud ratio handling
+    scale_pos_weight = 227845 / 492  # approx legit / fraud
+
+    param_grid = [
+        {
+            "n_estimators": 200,
+            "max_depth": 3,
+            "learning_rate": 0.1,
+            "subsample": 0.8,
+            "colsample_bytree": 0.8,
+            "scale_pos_weight": scale_pos_weight
+        },
+        {
+            "n_estimators": 300,
+            "max_depth": 4,
+            "learning_rate": 0.05,
+            "subsample": 0.8,
+            "colsample_bytree": 0.8,
+            "scale_pos_weight": scale_pos_weight
+        },
+        {
+            "n_estimators": 400,
+            "max_depth": 5,
+            "learning_rate": 0.03,
+            "subsample": 0.9,
+            "colsample_bytree": 0.9,
+            "scale_pos_weight": scale_pos_weight
+        }
+    ]
+
+    for i, params in enumerate(param_grid):
+        train_xgboost(params, run_name=f"xgboost_run_{i+1}")
 
 
 if __name__ == "__main__":
-    train_baseline()
+    main()
