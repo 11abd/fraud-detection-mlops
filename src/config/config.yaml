@@ -1,0 +1,11 @@
+data:
+  raw_path: data/raw/creditcard.csv
+  processed_path: data/processed/
+
+split:
+  test_size: 0.2
+  random_state: 42
+
+features:
+  target: Class
+  drop_columns: []
