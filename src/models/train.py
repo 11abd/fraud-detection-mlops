@@ -45,12 +45,21 @@ def train_xgboost(params: dict, run_name: str):
         mlflow.log_metric("roc_auc", roc_auc)
         mlflow.sklearn.log_model(model, "model")
 
+        # Save best model explicitly for inference
+        Path("artifacts").mkdir(exist_ok=True)
+        joblib.dump(model, "artifacts/best_model.pkl")
+
+        return roc_auc, model
+
+
 
 def main():
     mlflow.set_experiment("fraud-detection-xgboost")
 
-    # Fraud ratio handling
-    scale_pos_weight = 227845 / 492  # approx legit / fraud
+    best_auc = 0
+    best_model = None
+
+    scale_pos_weight = 227845 / 492
 
     param_grid = [
         {
@@ -80,7 +89,17 @@ def main():
     ]
 
     for i, params in enumerate(param_grid):
-        train_xgboost(params, run_name=f"xgboost_run_{i+1}")
+        auc, model = train_xgboost(params, run_name=f"xgboost_run_{i+1}")
+
+        if auc > best_auc:
+            best_auc = auc
+            best_model = model
+
+    # Save ONLY the best model
+    Path("artifacts").mkdir(exist_ok=True)
+    joblib.dump(best_model, "artifacts/best_model.pkl")
+
+    print(f"🏆 Best model saved with ROC-AUC: {best_auc:.4f}")
 
 
 if __name__ == "__main__":
