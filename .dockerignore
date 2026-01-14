@@ -1,0 +1,8 @@
+venv/
+__pycache__/
+.git/
+.gitignore
+notebooks/
+mlruns/
+data/raw/
+artifacts/
