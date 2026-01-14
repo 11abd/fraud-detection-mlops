@@ -1,8 +1,18 @@
-__pycache__/
+
+# Environments
 venv/
-.env
-mlruns/
-data/raw/*.csv
-.ipynb_checkpoints/
-artifacts/
+__pycache__/
+
+# Data
+data/raw/
 data/processed/
+
+# Artifacts
+artifacts/
+mlruns/
+
+# Notebooks checkpoints
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
