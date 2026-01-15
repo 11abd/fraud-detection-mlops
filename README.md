@@ -1,8 +1,8 @@
-🛡️ Fraud Detection System (MLOps Project)
+**🛡️ Fraud Detection System (MLOps Project)**
 
 A production-ready fraud detection system built end-to-end using Machine Learning and MLOps best practices — from preprocessing and model training to explainability, API deployment, Dockerization, and CI.
 
-🚀 Overview
+**🚀 Overview**
 
 This project addresses a real-world fraud detection problem with:
 
@@ -14,7 +14,7 @@ Explainable predictions
 
 Deployable inference service
 
-📊 Dataset
+**📊 Dataset**
 
 Credit Card Fraud Dataset (European Cardholders)
 
@@ -26,12 +26,12 @@ PCA-transformed numerical features
 
 Raw data is excluded from the repository.
 
-🏗️ Architecture
+**🏗️ Architecture**
 Preprocessing → XGBoost Model → Threshold Tuning
             → SHAP Explainability → FastAPI API
             → Docker → CI (GitHub Actions)
 
-⚙️ Tech Stack
+**⚙️ Tech Stack**
 
 ML: XGBoost, Scikit-learn
 
@@ -43,7 +43,7 @@ MLOps: MLflow, GitHub Actions
 
 Deployment: Docker, Docker Compose
 
-📁 Project Structure
+**📁 Project Structure**
 src/
  ├── api/              # FastAPI service
  ├── data/             # Preprocessing pipeline
@@ -54,7 +54,7 @@ Dockerfile
 docker-compose.yml
 .github/workflows/ci.yml
 
-🎯 Model & Evaluation
+**🎯 Model & Evaluation**
 
 Final model: XGBoost
 
@@ -64,13 +64,13 @@ Metrics: ROC-AUC, Recall, Precision
 
 Business-driven threshold tuning (not default 0.5)
 
-🔍 Explainability
+**🔍 Explainability**
 
 Global and local feature importance using SHAP
 
 Permutation-based explainer for XGBoost stability
 
-🌐 Inference API
+**🌐 Inference API**
 
 POST /predict
 
@@ -87,7 +87,7 @@ Output:
   "threshold_used": 0.3
 }
 
-🐳 Run Locally
+**🐳 Run Locally**
 docker build -t fraud-detection-api .
 docker compose up
 
@@ -96,15 +96,15 @@ Swagger UI:
 
 http://127.0.0.1:8000/docs
 
-🔁 CI/CD
+**🔁 CI/CD**
 
 GitHub Actions CI
 
 Validates dependencies
 
 Builds Docker image on every push
-
-🧠 Key Highlights
+**
+🧠 Key Highlights**
 
 Business-aligned fraud detection
 
@@ -114,7 +114,7 @@ Clean separation of code, data, and artifacts
 
 Dockerized & CI-enabled system
 
-👤 Author
+**👤 Author**
 
 Abd
 Machine Learning / MLOps Engineer
