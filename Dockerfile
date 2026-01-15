@@ -9,7 +9,6 @@ RUN pip install --upgrade pip && \
 
 # Copy app code
 COPY src/ src/
-COPY data/processed/ data/processed/
 COPY src/config/ src/config/
 
 EXPOSE 8000
