@@ -1,0 +1,12 @@
+version: "3.9"
+
+services:
+  fraud-api:
+    image: fraud-detection-api
+    container_name: fraud-detection-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./artifacts:/app/artifacts
+      - ./data/processed:/app/data/processed
+    restart: unless-stopped
